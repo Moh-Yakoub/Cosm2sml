@@ -1,5 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <repositories>
+    <repository>
+      <id>java.net</id>
+      <url>http://52north.org/maven/repo/releases/</url>
+    </repository>
+ </repositories>
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>net.cosm2sml.sample</groupId>
@@ -30,6 +36,11 @@
     	<groupId>org.apache.httpcomponents</groupId>
     	<artifactId>httpclient</artifactId>
     	<version>4.0-alpha4</version>
+    </dependency>
+    <dependency>
+        <groupId>org.n52.sensorweb</groupId>
+        <artifactId>52n-xml-sensorML-v101</artifactId>
+        <version>1.1.4</version>
     </dependency>
   </dependencies>
 </project>
