@@ -1,1 +1,0 @@
-This is an intial stage of developing a parser for cosm sensors and transform it to sensorML
