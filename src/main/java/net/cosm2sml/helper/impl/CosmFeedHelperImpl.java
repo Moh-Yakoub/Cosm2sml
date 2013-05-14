@@ -15,7 +15,7 @@ import net.cosm2sml.CosmDataStream;
 import net.cosm2sml.CosmFeed;
 import net.cosm2sml.helper.CosmFeedHelper;
 import net.cosm2sml.sensorml.Capability;
-import net.cosm2sml.sensorml.sensorML;
+import net.cosm2sml.sensorml.CosmSensorML;
 import net.cosm2sml.util.Constants;
 
 public class CosmFeedHelperImpl implements CosmFeedHelper {
@@ -47,7 +47,7 @@ public class CosmFeedHelperImpl implements CosmFeedHelper {
 		}
 	}
 
-	public sensorML decodeFeed(CosmFeed feed) {
+	public CosmSensorML decodeFeed(CosmFeed feed) {
 		// TODO Auto-generated method stub
 		int id = feed.id;
 		String longname = feed.description;
@@ -69,7 +69,7 @@ public class CosmFeedHelperImpl implements CosmFeedHelper {
 		
 		capabilities.add(new Capability("status","boolean",feed.status));
 		
-		sensorML ml = new sensorML(id+"",longname,shortname,created_at,end_at, capabilities, feed.tags);
+		CosmSensorML ml = new CosmSensorML(id+"",longname,shortname,created_at,end_at, capabilities, feed.tags);
 		return ml;
 		
 	}
