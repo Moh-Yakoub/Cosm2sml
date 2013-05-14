@@ -5,4 +5,4 @@ CosmFeed feed = helper.parseFeed(feed_id);
 CosmSensorML ml = helper.decodeFeed(feed);
 SensorMLDocumentEncoder encoder = new SensorMLDocumentEncoderImpl();</code></pre>
 
-<p>You need to add your api key to the <pre><code>Constants</code></pre> class
+<p>You need to add your api key to the <code>Constants</code> class
