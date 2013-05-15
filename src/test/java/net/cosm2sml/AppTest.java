@@ -1,38 +1,61 @@
 package net.cosm2sml;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.fail;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import net.cosm2sml.SensorMLEncoder.Impl.SensorMLDocumentEncoderImpl;
+import net.cosm2sml.sensorml.Capability;
+import net.cosm2sml.sensorml.CosmSensorML;
+import net.opengis.sensorML.x101.AbstractProcessType;
+import net.opengis.sensorML.x101.SensorMLDocument;
+import net.opengis.sensorML.x101.SensorMLDocument.SensorML.Member;
+
+import org.junit.Before;
+
 
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+public class AppTest {
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+	public static CosmSensorML cosmSensor;
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+	@Before
+	public  void setUp() {
+		/*
+		 * Set up the CosmSensorML object
+		 */
+		// We start with a simple capability
+		Capability capability = new Capability("status", "boolean", "true");
+		List<Capability> capabilites = new ArrayList<Capability>();
+		capabilites.add(capability);
+
+		// We fill in keywords
+		List<String> keywords = new ArrayList<String>();
+		keywords.add("testkeyword");
+		keywords.add("test");
+		cosmSensor = new CosmSensorML("urn:ogc:object:feature:testsensor",
+				"A Test Sensor", "TEST", "2013-15-5", "2013-16-5", capabilites,
+				keywords);
+	}
+
+	@org.junit.Test
+	public  void encodeThenTest() {
+		try{
+		SensorMLDocument doc = new SensorMLDocumentEncoderImpl().encode(cosmSensor);
+		/*
+		 * Test for keywords
+		 */
+		assert(doc.getSensorML().getMemberArray().length == 1);
+		Member member = doc.getSensorML().getMemberArray()[0];
+		AbstractProcessType type = member.getProcess();
+		assert(type !=null);
+		
+		}catch(Exception e){
+			fail("fail on parsing");
+		}
+		
+	}
 }
