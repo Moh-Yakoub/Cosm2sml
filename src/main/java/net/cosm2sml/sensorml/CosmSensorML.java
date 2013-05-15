@@ -70,6 +70,33 @@ public class CosmSensorML {
 	private String end_at;
 	private List<Capability> capabilities;
 	private List<String> keywords;
+	public String getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(String latitude) {
+		this.latitude = latitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
+	}
+
+	private String latitude;
+	private String longitude;
+	public String getAltitude() {
+		return altitude;
+	}
+
+	public void setAltitude(String altitude) {
+		this.altitude = altitude;
+	}
+
+	private String altitude;
 
 	public CosmSensorML(String unique_id, String long_name, String short_name,
 			String created_at, String end_at, List<Capability> capabilities,

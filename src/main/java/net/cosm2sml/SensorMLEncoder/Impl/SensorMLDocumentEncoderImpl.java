@@ -2,18 +2,17 @@ package net.cosm2sml.SensorMLEncoder.Impl;
 
 import java.util.List;
 
-import org.apache.xmlbeans.SchemaType;
-import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.impl.schema.SchemaTypeImpl;
+import org.apache.xmlbeans.impl.xb.xsdschema.UnionDocument.Union.MemberTypes;
 
 import net.cosm2sml.SensorMLEncoder.SensorMLDocumentEncoder;
 import net.cosm2sml.sensorml.Capability;
 import net.cosm2sml.sensorml.CosmSensorML;
 import net.cosm2sml.util.Constants;
-import net.opengis.gml.BooleanPropertyType;
 import net.opengis.gml.StringOrRefType;
 import net.opengis.gml.TimePeriodType;
-import net.opengis.gml.impl.BooleanDocumentImpl;
+import net.opengis.sensorML.x101.AbstractProcessType;
+import net.opengis.sensorML.x101.PositionDocument.Position;
 import net.opengis.sensorML.x101.SensorMLDocument;
 import net.opengis.sensorML.x101.CapabilitiesDocument.Capabilities;
 import net.opengis.sensorML.x101.IdentificationDocument.Identification;
@@ -22,31 +21,33 @@ import net.opengis.sensorML.x101.IdentificationDocument.Identification.Identifie
 import net.opengis.sensorML.x101.KeywordsDocument.Keywords;
 import net.opengis.sensorML.x101.KeywordsDocument.Keywords.KeywordList;
 import net.opengis.sensorML.x101.SensorMLDocument.SensorML;
+import net.opengis.sensorML.x101.SensorMLDocument.SensorML.Member;
+import net.opengis.sensorML.x101.SystemType;
 import net.opengis.sensorML.x101.TermDocument.Term;
 import net.opengis.sensorML.x101.ValidTimeDocument.ValidTime;
-import net.opengis.sensorML.x101.impl.CapabilitiesDocumentImpl;
-import net.opengis.swe.x101.AbstractDataRecordType;
 import net.opengis.swe.x101.BooleanDocument;
 import net.opengis.swe.x101.DataComponentPropertyType;
-import net.opengis.swe.x101.DataRecordDocument;
 import net.opengis.swe.x101.DataRecordType;
-import net.opengis.swe.x101.RecordType;
-import net.opengis.swe.x101.impl.AbstractDataRecordTypeImpl;
-import net.opengis.swe.x101.impl.DataRecordDocumentImpl;
-import net.opengis.swe.x101.impl.DataRecordPropertyTypeImpl;
-import net.opengis.swe.x101.impl.DataRecordTypeImpl;
-import net.opengis.swe.x101.impl.RecordTypeImpl;
+import net.opengis.swe.x101.PositionType;
+import net.opengis.swe.x101.VectorPropertyType;
+import net.opengis.swe.x101.VectorType;
+import net.opengis.swe.x101.VectorType.Coordinate;
 
 public class SensorMLDocumentEncoderImpl implements SensorMLDocumentEncoder {
 
 	public SensorMLDocument encode(CosmSensorML ml) throws Exception {
 		// TODO Auto-generated method stub
 		SensorMLDocument document = SensorMLDocument.Factory.newInstance();
-		SensorML sensor = document.addNewSensorML();
+
+		SensorML sensor_type = document.addNewSensorML();
+		Member member = sensor_type.addNewMember();
+		SystemType sensor = SystemType.Factory.newInstance();
 		/*
 		 * Add keywords
 		 */
+
 		Keywords keywords = sensor.addNewKeywords();
+
 		KeywordList keywords_list = keywords.addNewKeywordList();
 
 		List<String> feed_keywords = ml.getKeywords();
@@ -99,7 +100,7 @@ public class SensorMLDocumentEncoderImpl implements SensorMLDocumentEncoder {
 		period.addNewEndPosition().setStringValue(ml.getEnd_at());
 
 		Capabilities capabilities = sensor.addNewCapabilities();
-	
+
 		List<Capability> cosmcapabilities = ml.getCapabilities();
 		DataRecordType recordtype = DataRecordType.Factory.newInstance();
 		/*
@@ -110,17 +111,40 @@ public class SensorMLDocumentEncoderImpl implements SensorMLDocumentEncoder {
 		recordtype.setDescription(description);
 		for (Capability c : cosmcapabilities) {
 			DataComponentPropertyType field = recordtype.addNewField();
-			if(c.getType().equals("boolean")){
+			if (c.getType().equals("boolean")) {
 				BooleanDocument.Boolean bool = field.addNewBoolean();
-				
+
 				bool.setDefinition(c.getName());
 				bool.setValue(Boolean.parseBoolean(c.getValue()));
 			}
-			
+
 		}
 		capabilities.setAbstractDataRecord(recordtype);
-		
+
+		/*
+		 * Add a new position
+		 */
+		Position p = sensor.addNewPosition();
+		VectorType vector = p.addNewPosition().addNewLocation().addNewVector();
+
+		if (ml.getLongitude() != null && ml.getLatitude() != null
+				&& ml.getAltitude() != null) {
+			Coordinate longitude = vector.addNewCoordinate();
+			longitude.setName("longitude");
+			longitude.addNewQuantity().setValue(
+					Double.parseDouble(ml.getLongitude()));
+
+			Coordinate latitude = vector.addNewCoordinate();
+			latitude.setName("latitude");
+			latitude.addNewQuantity().setValue(
+					Double.parseDouble(ml.getLatitude()));
+
+			Coordinate altitude = vector.addNewCoordinate();
+			altitude.setName("altitude");
+			altitude.addNewQuantity().setValue(
+					Double.parseDouble(ml.getAltitude()));
+		}
+		member.setProcess(sensor);
 		return SensorMLDocument.Factory.parse(document.toString());
 	}
-
 }

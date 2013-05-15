@@ -21,9 +21,12 @@ public class App {
 		CosmSensorML ml = new CosmSensorML("urn:ogc:object:feature:testsensor",
 				"A Test Sensor", "TEST", "2012", "2013",
 			caps, new ArrayList<String>());
+		ml.setLongitude("3.5");
+		ml.setLatitude("1.4");
+		ml.setAltitude("2.1");
 
 		SensorMLDocumentEncoder encoder = new SensorMLDocumentEncoderImpl();
 		System.out.println(encoder.encode(ml));
-
+		
 	}
 }
